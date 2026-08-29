@@ -78,30 +78,20 @@ export function MiniPlayer({ theme, onExpandPlayer }: MiniPlayerProps) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-[64px] md:bottom-0 left-0 right-0 z-40 px-3 md:px-0 pointer-events-none"
+            className="fixed bottom-[64px] md:bottom-0 left-0 right-0 w-full z-40 px-3 md:px-0 pointer-events-none"
           >
+            {/* ─── DESKTOP FULL-WIDTH EDGE-TO-EDGE BAR (md+) ─── */}
             <div
-              className={`w-full max-w-[1720px] mx-auto pointer-events-auto backdrop-blur-2xl transition-colors duration-300 relative rounded-2xl md:rounded-none border md:border-b-0 md:border-x-0 overflow-hidden shadow-2xl ${
+              className={`hidden md:block w-full pointer-events-auto border-t backdrop-blur-2xl transition-colors duration-300 shadow-2xl ${
                 theme === 'dark'
-                  ? 'bg-[#111116]/95 border-neutral-800/90 text-white shadow-black/80'
-                  : 'bg-white/95 border-neutral-200/90 text-black shadow-neutral-500/10'
+                  ? 'bg-[#0a0a0c]/95 border-neutral-800 text-white shadow-[0_-10px_30px_rgba(0,0,0,0.8)]'
+                  : 'bg-white/95 border-neutral-200 text-black shadow-[0_-10px_30px_rgba(0,0,0,0.06)]'
               }`}
             >
-              {/* Progress Line (Top-pinned on card) */}
-              <div className="w-full h-[2.5px] bg-neutral-800/40 relative overflow-hidden">
-                <div
-                  className={`h-full transition-all duration-150 ${
-                    theme === 'dark' ? 'bg-[#FF2D55]' : 'bg-black'
-                  }`}
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-
-              {/* ─── DESKTOP EXPANDED CONTROLS DOCK (md+) ─── */}
-              <div className="hidden md:flex flex-col px-4 sm:px-8 md:px-12 py-3">
-                {/* Desktop Scrubber */}
+              <div className="w-full max-w-[1720px] mx-auto flex flex-col px-4 sm:px-8 md:px-12 py-3">
+                {/* Single Scrubber Row (With Timestamps) */}
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-[10px] font-mono text-neutral-500 w-10 text-right">
+                  <span className="text-[10px] font-mono text-neutral-500 w-10 text-right select-none">
                     {formatTime(currentTime)}
                   </span>
                   <div className="flex-1 relative h-1.5 flex items-center group cursor-pointer">
@@ -128,7 +118,7 @@ export function MiniPlayer({ theme, onExpandPlayer }: MiniPlayerProps) {
                       </div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-mono text-neutral-500 w-10">
+                  <span className="text-[10px] font-mono text-neutral-500 w-10 select-none">
                     {formatTime(duration)}
                   </span>
                 </div>
@@ -139,7 +129,7 @@ export function MiniPlayer({ theme, onExpandPlayer }: MiniPlayerProps) {
                   <div className="w-1/3 flex items-center gap-3.5 min-w-0">
                     <button
                       onClick={onExpandPlayer}
-                      className="relative w-11 h-11 shrink-0 group border border-neutral-700/50 overflow-hidden cursor-pointer rounded-lg"
+                      className="relative w-11 h-11 shrink-0 group border border-neutral-700/50 overflow-hidden cursor-pointer rounded-lg shadow"
                     >
                       <Image
                         src={currentTrack.coverUrl}
@@ -154,7 +144,7 @@ export function MiniPlayer({ theme, onExpandPlayer }: MiniPlayerProps) {
                       </div>
                     </button>
 
-                    <div className="min-w-0 overflow-hidden flex-1 cursor-pointer" onClick={onExpandPlayer}>
+                    <div className="min-w-0 overflow-hidden flex-1 cursor-pointer select-none" onClick={onExpandPlayer}>
                       <div className="uppercase font-semibold text-xs truncate tracking-wider">
                         {currentTrack.title}
                       </div>
@@ -193,7 +183,7 @@ export function MiniPlayer({ theme, onExpandPlayer }: MiniPlayerProps) {
 
                     <button
                       onClick={prevTrack}
-                      className="text-neutral-500 hover:text-current transition-colors cursor-pointer"
+                      className="text-neutral-500 hover:text-current transition-colors cursor-pointer active:scale-90"
                       title="Previous"
                     >
                       <SkipBack size={20} className="fill-current" />
@@ -201,7 +191,7 @@ export function MiniPlayer({ theme, onExpandPlayer }: MiniPlayerProps) {
 
                     <button
                       onClick={togglePlay}
-                      className={`w-10 h-10 flex items-center justify-center border transition-all cursor-pointer rounded-lg ${
+                      className={`w-10 h-10 flex items-center justify-center border transition-all cursor-pointer rounded-lg active:scale-95 shadow-md ${
                         theme === 'dark'
                           ? 'border-white bg-white text-black hover:bg-transparent hover:text-white'
                           : 'border-black bg-black text-white hover:bg-transparent hover:text-black'
@@ -217,7 +207,7 @@ export function MiniPlayer({ theme, onExpandPlayer }: MiniPlayerProps) {
 
                     <button
                       onClick={nextTrack}
-                      className="text-neutral-500 hover:text-current transition-colors cursor-pointer"
+                      className="text-neutral-500 hover:text-current transition-colors cursor-pointer active:scale-90"
                       title="Next"
                     >
                       <SkipForward size={20} className="fill-current" />
@@ -288,9 +278,27 @@ export function MiniPlayer({ theme, onExpandPlayer }: MiniPlayerProps) {
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* ─── NATIVE MOBILE TOUCH CARD (< md) ─── */}
-              <div className="md:hidden flex items-center justify-between p-2.5 sm:p-3 gap-3">
+            {/* ─── NATIVE MOBILE TOUCH CARD (< md) ─── */}
+            <div
+              className={`md:hidden w-full max-w-md mx-auto pointer-events-auto backdrop-blur-2xl transition-colors duration-300 relative rounded-2xl border overflow-hidden shadow-2xl ${
+                theme === 'dark'
+                  ? 'bg-[#111116]/95 border-neutral-800/90 text-white shadow-black/80'
+                  : 'bg-white/95 border-neutral-200/90 text-black shadow-neutral-500/10'
+              }`}
+            >
+              {/* Mobile Single Pinned Progress Line */}
+              <div className="w-full h-[2.5px] bg-neutral-800/40 relative overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-150 ${
+                    theme === 'dark' ? 'bg-[#FF2D55]' : 'bg-black'
+                  }`}
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-2.5 sm:p-3 gap-3">
                 {/* Left: Artwork + Title/Artist (Tapping expands to fullscreen) */}
                 <div
                   onClick={onExpandPlayer}
