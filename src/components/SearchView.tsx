@@ -164,7 +164,7 @@ export function SearchView({ theme, onClose }: SearchViewProps) {
             <span>AI Mood &amp; Vibe Radio Prompt</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
             <input
               type="text"
               value={aiVibePrompt}
@@ -172,7 +172,7 @@ export function SearchView({ theme, onClose }: SearchViewProps) {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleAiVibeSearch(aiVibePrompt);
               }}
-              placeholder="e.g., 'Acoustic evening rain with warm guitars' or 'Cyberpunk night drive'..."
+              placeholder="e.g., 'Acoustic evening rain' or 'Cyberpunk night drive'..."
               className={`flex-1 px-4 py-2.5 text-xs sm:text-sm font-mono rounded-lg border outline-none transition-all ${
                 isDark
                   ? 'bg-neutral-900/80 border-neutral-700 text-white placeholder-neutral-500 focus:border-white'
@@ -183,7 +183,7 @@ export function SearchView({ theme, onClose }: SearchViewProps) {
             <button
               onClick={() => handleAiVibeSearch(aiVibePrompt)}
               disabled={!aiVibePrompt.trim() || isAiLoading}
-              className={`px-5 py-2.5 rounded-lg font-mono text-xs uppercase tracking-widest font-bold flex items-center gap-2 transition-all cursor-pointer shrink-0 ${
+              className={`px-4 sm:px-5 py-2.5 rounded-lg font-mono text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shrink-0 ${
                 !aiVibePrompt.trim() || isAiLoading
                   ? 'opacity-50 cursor-not-allowed bg-neutral-700 text-neutral-400'
                   : 'bg-white text-black hover:bg-neutral-200 shadow-md'

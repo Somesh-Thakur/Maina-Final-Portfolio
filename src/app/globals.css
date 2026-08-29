@@ -76,10 +76,26 @@
 
 /* ──────────── Global Base Styles ──────────── */
 @layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
   body {
     font-family: var(--font-editorial-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .touch-pill {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 }
 

@@ -16,6 +16,7 @@ import { FlowFeed } from '@/components/FlowFeed';
 import { HotkeyHelpModal } from '@/components/HotkeyHelpModal';
 import { SoundCapsuleModal } from '@/components/SoundCapsuleModal';
 import { DiscordRPCModal } from '@/components/DiscordRPCModal';
+import { MobileNav } from '@/components/MobileNav';
 import { RefreshCw, Search, Sparkles, Wand2 } from 'lucide-react';
 import type { Track, ThemeMode, NavTab } from '@/types';
 
@@ -276,7 +277,7 @@ export default function Home() {
                         </span>
                       </div>
 
-                      <h1 className="editorial-title text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-normal tracking-tight">
+                      <h1 className="editorial-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal tracking-tight">
                         Maina<br />
                         <span className="italic font-light opacity-90">
                           {theme === 'dark' ? 'Dark Edition' : 'Light Edition'}
@@ -284,7 +285,7 @@ export default function Home() {
                       </h1>
 
                       <p
-                        className={`text-base sm:text-lg leading-relaxed mt-6 max-w-2xl transition-colors duration-500 ${mutedTextColor}`}
+                        className={`text-sm sm:text-base md:text-lg leading-relaxed mt-4 sm:mt-6 max-w-2xl transition-colors duration-500 ${mutedTextColor}`}
                       >
                         A refined editorial approach to digital minimalist aesthetics. Real-time 320kbps streams,
                         dynamic rotating charts, and ambient audio reactive visuals.
@@ -499,6 +500,13 @@ export default function Home() {
 
       {/* 5. Persistent Mini-Player */}
       <MiniPlayer theme={theme} onExpandPlayer={toggleFullscreenPlayer} />
+
+      {/* 5.5 Mobile Bottom Navigation Bar (< md) */}
+      <MobileNav
+        currentView={activeTab}
+        onViewChange={(tab) => setActiveTab(tab as NavTab)}
+        theme={theme}
+      />
 
       {/* 6. Fullscreen Player Overlay */}
       <FullscreenPlayer isOpen={isFullscreenPlayer} onClose={toggleFullscreenPlayer} theme={theme} />

@@ -106,6 +106,12 @@ class AudioFXManager {
     }
   }
 
+  toggleKaraoke(enabled?: boolean): boolean {
+    const target = typeof enabled === 'boolean' ? enabled : !this.isKaraoke;
+    this.setKaraoke(target);
+    return this.isKaraoke;
+  }
+
   getIsKaraoke(): boolean {
     return this.isKaraoke;
   }

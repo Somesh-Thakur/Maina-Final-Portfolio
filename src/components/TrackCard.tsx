@@ -57,20 +57,21 @@ export function TrackCard({
   return (
     <motion.div
       whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
       onClick={onPlay}
-      className={`group cursor-pointer flex flex-col justify-between p-3.5 sm:p-4 border transition-all duration-300 relative ${
+      className={`group cursor-pointer flex flex-col justify-between p-2.5 sm:p-4 rounded-xl sm:rounded-none border transition-all duration-300 relative select-none ${
         isFeatured ? 'col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-2' : 'col-span-1'
       } ${
         isDark
-          ? 'border-neutral-800/80 hover:border-neutral-600 bg-[#0e0e10]/80'
-          : 'border-neutral-200/80 hover:border-neutral-400 bg-white/90'
+          ? 'border-neutral-800/80 hover:border-neutral-600 bg-[#0e0e10]/80 shadow-md'
+          : 'border-neutral-200/80 hover:border-neutral-400 bg-white/90 shadow-sm'
       } ${isCurrentTrack ? (isDark ? 'border-white/80 ring-1 ring-white/40' : 'border-black/80 ring-1 ring-black/30') : ''}`}
     >
       {/* Media Box */}
       <div>
         <div
-          className={`relative overflow-hidden mb-3.5 bg-neutral-900 border ${
+          className={`relative overflow-hidden mb-2.5 sm:mb-3.5 bg-neutral-900 rounded-lg sm:rounded-none border ${
             isDark ? 'border-neutral-800' : 'border-neutral-200'
           } ${isFeatured ? 'aspect-[16/10]' : 'aspect-square'}`}
         >

@@ -99,14 +99,14 @@ export function LibraryView({ theme }: LibraryViewProps) {
         </div>
 
         {/* Sub-tab Switcher Pills & Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center p-1 rounded-full border border-neutral-200 dark:border-neutral-800 bg-black/5 dark:bg-white/5 backdrop-blur-sm">
+        <div className="flex items-center gap-2.5 overflow-x-auto scrollbar-none pb-2 lg:pb-0">
+          <div className="flex items-center p-1 rounded-full border border-neutral-200 dark:border-neutral-800 bg-black/5 dark:bg-white/5 backdrop-blur-sm shrink-0">
             <button
               onClick={() => {
                 setActiveSubTab('liked');
                 setSelectedPlaylistId(null);
               }}
-              className={`px-4 py-1.5 rounded-full text-xs font-mono tracking-wider uppercase transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-mono tracking-wider uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeSubTab === 'liked'
                   ? isDark
                     ? 'bg-white text-black font-bold shadow'
@@ -120,7 +120,7 @@ export function LibraryView({ theme }: LibraryViewProps) {
 
             <button
               onClick={() => setActiveSubTab('playlists')}
-              className={`px-4 py-1.5 rounded-full text-xs font-mono tracking-wider uppercase transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-mono tracking-wider uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeSubTab === 'playlists'
                   ? isDark
                     ? 'bg-white text-black font-bold shadow'
@@ -137,7 +137,7 @@ export function LibraryView({ theme }: LibraryViewProps) {
                 setActiveSubTab('history');
                 setSelectedPlaylistId(null);
               }}
-              className={`px-4 py-1.5 rounded-full text-xs font-mono tracking-wider uppercase transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-mono tracking-wider uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeSubTab === 'history'
                   ? isDark
                     ? 'bg-white text-black font-bold shadow'
@@ -150,7 +150,7 @@ export function LibraryView({ theme }: LibraryViewProps) {
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setIsAiModalOpen(true)}
               className={`px-3.5 py-2 border text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer ${
