@@ -1,0 +1,35 @@
+{
+  "name": "maina",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Maina — Ultra-luxury ambient music streaming platform",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "rpc": "node discord-rpc-bridge/server.js"
+  },
+  "dependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/ws": "^8.18.1",
+    "crypto-js": "^4.2.0",
+    "fast-average-color": "^9.4.0",
+    "framer-motion": "^12.15.0",
+    "lucide-react": "^0.511.0",
+    "next": "^15.3.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "ws": "^8.21.3",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.8",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "postcss": "^8.5.4",
+    "tailwindcss": "^4.1.8",
+    "typescript": "^5.8.3"
+  }
+}

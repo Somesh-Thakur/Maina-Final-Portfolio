@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+@theme {
+  --font-editorial-serif: 'Newsreader', 'Cormorant Garamond', 'Georgia', 'Playfair Display', serif;
+  --font-editorial-sans: 'Inter', 'Geist', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+
+  --color-obsidian: #0a0a0c;
+  --color-obsidian-light: #0f0f0f;
+  --color-obsidian-border: #222222;
+  --color-obsidian-border-subtle: #191919;
+  --color-obsidian-text: #f0f0f0;
+  --color-obsidian-muted: #888888;
+
+  --color-cloud: #ffffff;
+  --color-cloud-surface: #fafafa;
+  --color-cloud-border: #eeeeee;
+  --color-cloud-border-subtle: #f0f0f0;
+  --color-cloud-text: #111111;
+  --color-cloud-muted: #666666;
+
+  --color-accent: #2563eb;
+}
+
+:root {
+  --ambient-primary: #2563eb;
+  --ambient-secondary: #7c3aed;
+}
+
+/* ──────────── Editorial Utility Classes ──────────── */
+@layer utilities {
+  .font-editorial-serif {
+    font-family: var(--font-editorial-serif);
+  }
+  .font-editorial-sans {
+    font-family: var(--font-editorial-sans);
+  }
+  .editorial-title {
+    font-family: var(--font-editorial-serif);
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+  }
+  .editorial-btn {
+    border: 1px solid currentColor;
+    padding: 10px 22px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .editorial-meta {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    line-height: 1.8;
+  }
+  .editorial-badge {
+    background-color: var(--color-accent);
+    color: #ffffff;
+    padding: 4px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 9999px;
+    display: inline-block;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* ──────────── Global Base Styles ──────────── */
+@layer base {
+  body {
+    font-family: var(--font-editorial-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ──────────── Custom Sleek Themed Scrollbars ──────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 140, 140, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 140, 140, 0.45);
+}
+
+/* Firefox scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 140, 140, 0.25) transparent;
+}
+
+/* Specific Subtle Frosted Glass Scrollbar for Lyrics */
+.custom-lyrics-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-lyrics-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-lyrics-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+}
+
+.custom-lyrics-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.38);
+}
+
+/* ──────────── Keyframe Animations ──────────── */
+@keyframes pulse {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.6; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(0.98); }
+}
+
+@keyframes vinyl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ──────────── Range Input Styling ──────────── */
+input[type='range'] {
+  -webkit-appearance: none;
+  background: transparent;
+}
+input[type='range']:focus {
+  outline: none;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 0;
+  background: currentColor;
+  cursor: pointer;
+  margin-top: -5px;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 2px;
+  background: currentColor;
+  opacity: 0.3;
+}
