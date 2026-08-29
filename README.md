@@ -73,35 +73,35 @@
 
 ```mermaid
 graph TD
-    A[Client Browser / PWA] --> B[Next.js 15 App Router]
+    A["Client Browser / PWA"] --> B["Next.js 15 App Router"]
     
-    subgraph Frontend Core
-        B --> C[Zustand Persistent Store]
-        B --> D[Web Audio DSP Graph]
-        B --> E[Canvas Audio Visualizers]
-        B --> F[Document PiP Engine]
+    subgraph "Frontend Core"
+        B --> C["Zustand Persistent Store"]
+        B --> D["Web Audio DSP Graph"]
+        B --> E["Canvas Audio Visualizers"]
+        B --> F["Document PiP Engine"]
     end
 
-    subgraph Internal API Proxies
-        B --> G[/api/saavn/search & trending]
-        B --> H[/api/lyrics]
-        B --> I[/api/import/youtube]
-        B --> J[/api/ai/* Routes]
+    subgraph "Internal API Proxies"
+        B --> G["/api/saavn/search & trending"]
+        B --> H["/api/lyrics"]
+        B --> I["/api/import/youtube"]
+        B --> J["/api/ai/* Routes"]
     end
 
-    subgraph AI Failover Cascade
-        J --> K{Multi-Provider LLM Client}
-        K -->|Priority 1| L[Google Gemini 3.5 Flash]
-        K -->|Rate Limited 429| M[Groq Qwen 3.6 27B]
-        K -->|Rate Limited 429| N[OpenRouter Nemotron Free]
-        K -->|Fallback| O[Heuristic Local Engine]
+    subgraph "AI Failover Cascade"
+        J --> K{"Multi-Provider LLM Client"}
+        K -->|Priority 1| L["Google Gemini 3.5 Flash"]
+        K -->|Rate Limited 429| M["Groq Qwen 3.6 27B"]
+        K -->|Rate Limited 429| N["OpenRouter Nemotron Free"]
+        K -->|Fallback| O["Heuristic Local Engine"]
     end
 
-    subgraph Storage & Media
-        C --> P[localStorage Settings]
-        C --> Q[IndexedDB Audio Blobs]
-        G --> R[JioSaavn 320kbps CDN]
-        H --> S[LRCLIB Synced Engine]
+    subgraph "Storage & Media"
+        C --> P["localStorage Settings"]
+        C --> Q["IndexedDB Audio Blobs"]
+        G --> R["JioSaavn 320kbps CDN"]
+        H --> S["LRCLIB Synced Engine"]
     end
 ```
 
