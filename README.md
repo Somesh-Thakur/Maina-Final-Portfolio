@@ -214,14 +214,40 @@ Maina features an **Automatic Multi-Provider Failover Cascade**. If any provider
 
 ---
 
-## 📡 Discord Rich Presence (RPC) Bridge (Optional)
+## 🧩 Chrome Extension & Discord Rich Presence (RPC)
 
-Maina includes a standalone WebSocket bridge that streams your active playback status to Discord Rich Presence.
+Broadcast your active playback status and album art on **Discord** in real time:
 
-To launch the RPC bridge:
+### 1. Install Chrome Extension (Manifest V3)
+1. Open `chrome://extensions` in your browser (Chrome, Brave, Edge).
+2. Enable the **Developer mode** toggle in the top-right corner.
+3. Click **Load unpacked** and select the [`chrome-extension/`](./chrome-extension) folder.
+4. Pin the **Maina** extension to your toolbar.
+
+### 2. Run Local Bridge (Optional)
 ```bash
 npm run rpc
 ```
+
+---
+
+## 🚀 100% Free Hosting Guide
+
+Maina is built on **Next.js 15 App Router** and can be deployed for **100% free** on any of the following platforms:
+
+### 🥇 Option 1: Vercel (Recommended — 1-Click Deployment)
+1. Go to [Vercel](https://vercel.com) and sign in with your GitHub account.
+2. Click **"Add New..."** → **"Project"** and select `Maina-Final-Portfolio`.
+3. In **Environment Variables**, add:
+   - `GEMINI_API_KEY` (Free from [Google AI Studio](https://aistudio.google.com/app/apikey))
+   - `GROQ_API_KEY` (Free from [Groq Console](https://console.groq.com/keys))
+   - `OPENROUTER_API_KEY` (Free from [OpenRouter](https://openrouter.ai/keys))
+4. Click **Deploy**. Vercel will automatically build and host your app with global edge CDN, automatic HTTPS, and free custom domains.
+
+### 🥈 Option 2: Netlify
+1. Connect your repository to [Netlify](https://www.netlify.com/).
+2. Set build command to `npm run build` and publish directory to `.next`.
+3. Configure environment variables in Site settings.
 
 ---
 

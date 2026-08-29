@@ -23,6 +23,7 @@ interface TopNavbarProps {
   onToggleTheme: () => void;
   onOpenHelp?: () => void;
   onOpenCapsule?: () => void;
+  onOpenRPC?: () => void;
 }
 
 const NAV_ITEMS: { id: NavTab; label: string }[] = [
@@ -39,6 +40,7 @@ export function TopNavbar({
   onToggleTheme,
   onOpenHelp,
   onOpenCapsule,
+  onOpenRPC,
 }: TopNavbarProps) {
   const { likedSongs, isMuted, toggleMute } = usePlayerStore();
   const isDark = theme === 'dark';
@@ -146,6 +148,20 @@ export function TopNavbar({
           >
             <PictureInPicture2 size={15} />
           </button>
+
+          {onOpenRPC && (
+            <button
+              onClick={onOpenRPC}
+              className={`flex items-center justify-center w-10 h-10 border transition-all cursor-pointer ${
+                isDark
+                  ? 'border-neutral-800 hover:border-[#5865F2] bg-neutral-900/50 text-[#5865F2]'
+                  : 'border-neutral-200 hover:border-[#5865F2] bg-neutral-100/50 text-[#5865F2]'
+              }`}
+              title="Discord Rich Presence & Chrome Extension"
+            >
+              <span className="text-xs font-mono font-bold">RPC</span>
+            </button>
+          )}
 
           {onOpenHelp && (
             <button

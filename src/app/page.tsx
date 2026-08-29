@@ -15,6 +15,7 @@ import { LibraryView } from '@/components/LibraryView';
 import { FlowFeed } from '@/components/FlowFeed';
 import { HotkeyHelpModal } from '@/components/HotkeyHelpModal';
 import { SoundCapsuleModal } from '@/components/SoundCapsuleModal';
+import { DiscordRPCModal } from '@/components/DiscordRPCModal';
 import { RefreshCw, Search, Sparkles, Wand2 } from 'lucide-react';
 import type { Track, ThemeMode, NavTab } from '@/types';
 
@@ -45,6 +46,7 @@ export default function Home() {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
   const [isCapsuleOpen, setIsCapsuleOpen] = useState<boolean>(false);
+  const [isRPCOpen, setIsRPCOpen] = useState<boolean>(false);
 
   const {
     currentTrack,
@@ -241,6 +243,7 @@ export default function Home() {
         onViewChange={(tab) => setActiveTab(tab as NavTab)}
         onOpenHelp={() => setIsHelpOpen(true)}
         onOpenCapsule={() => setIsCapsuleOpen(true)}
+        onOpenRPC={() => setIsRPCOpen(true)}
       />
 
       {/* 4. Main Edge-to-Edge Container */}
@@ -511,6 +514,13 @@ export default function Home() {
       <SoundCapsuleModal
         isOpen={isCapsuleOpen}
         onClose={() => setIsCapsuleOpen(false)}
+        theme={theme}
+      />
+
+      {/* 9. Discord RPC Chrome Extension Download Modal */}
+      <DiscordRPCModal
+        isOpen={isRPCOpen}
+        onClose={() => setIsRPCOpen(false)}
         theme={theme}
       />
     </div>

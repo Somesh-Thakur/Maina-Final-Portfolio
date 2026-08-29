@@ -90,6 +90,15 @@ class DiscordRPCClient {
   }
 
   sendUpdate(data: DiscordRPCPayload['data']): void {
+    // 1. Dispatch event to Chrome Extension content script
+    if (typeof window !== 'undefined') {
+      try {
+        window.postMessage({ type: 'MAINA_RPC_UPDATE', payload: data }, '*');
+        window.dispatchEvent(new CustomEvent('maina-playback-update', { detail: data }));
+      } catch {}
+    }
+
+    // 2. Send via native WebSocket to local bridge
     if (this.ws?.readyState === WebSocket.OPEN) {
       try {
         const { currentTime, duration, isPlaying } = data;
@@ -115,6 +124,14 @@ class DiscordRPCClient {
   }
 
   sendClear(): void {
+    // 1. Dispatch event to Chrome Extension content script
+    if (typeof window !== 'undefined') {
+      try {
+        window.postMessage({ type: 'MAINA_RPC_CLEAR' }, '*');
+      } catch {}
+    }
+
+    // 2. Send via native WebSocket to local bridge
     if (this.ws?.readyState === WebSocket.OPEN) {
       try {
         this.ws.send(JSON.stringify({ type: 'CLEAR' }));
