@@ -29,8 +29,7 @@ export function decryptMediaUrl(encryptedMediaUrl: string): string {
       .replace('_96.mp4', '_320.mp4')
       .replace('_160.mp4', '_320.mp4')
       .replace('_48.mp4', '_320.mp4');
-  } catch (err) {
-    console.error('Error decrypting JioSaavn media url:', err);
+  } catch {
     return '';
   }
 }
@@ -38,6 +37,39 @@ export function decryptMediaUrl(encryptedMediaUrl: string): string {
 export function formatRawJioSaavnSong(song: any): Track | null {
   if (!song) return null;
 
+  // Format from secondary Saavn API structures if needed
+  if (song.downloadUrl && Array.isArray(song.downloadUrl)) {
+    const dlUrl =
+      song.downloadUrl.find((u: any) => u.quality === '320kbps')?.url ||
+      song.downloadUrl.find((u: any) => u.quality === '160kbps')?.url ||
+      song.downloadUrl[0]?.url ||
+      '';
+
+    const imgUrl =
+      song.image?.find((i: any) => i.quality === '500x500')?.url ||
+      song.image?.[song.image?.length - 1]?.url ||
+      song.image?.[0]?.url ||
+      '';
+
+    const artistName = Array.isArray(song.artists?.primary)
+      ? song.artists.primary.map((a: any) => a.name).join(', ')
+      : song.artist || 'Unknown Artist';
+
+    if (!dlUrl) return null;
+
+    return {
+      id: song.id || String(Math.random()),
+      title: decodeHtmlEntities(song.name || song.title || 'Untitled'),
+      artist: decodeHtmlEntities(artistName),
+      album: decodeHtmlEntities(song.album?.name || song.album || 'Single'),
+      coverUrl: imgUrl,
+      audioUrl: dlUrl,
+      duration: parseInt(song.duration || '210', 10),
+      hasLyrics: song.hasLyrics === 'true' || song.hasLyrics === true,
+    };
+  }
+
+  // Official JioSaavn DES-ECB structure
   const encUrl =
     song.more_info?.encrypted_media_url ||
     song.encrypted_media_url ||
@@ -54,7 +86,7 @@ export function formatRawJioSaavnSong(song: any): Track | null {
       .replace('http:', 'https:');
   }
 
-  let artistName =
+  const artistName =
     song.more_info?.artistMap?.primary_artists?.map((a: any) => a.name).join(', ') ||
     song.more_info?.music ||
     song.subtitle ||
@@ -78,41 +110,89 @@ export function formatRawJioSaavnSong(song: any): Track | null {
   };
 }
 
+/**
+ * Robust Multi-Endpoint JioSaavn Search with automatic failover
+ */
 export async function searchJioSaavn(query: string, limit = 24): Promise<Track[]> {
+  const cleanQ = query.trim();
+  if (!cleanQ) return [];
+
+  // Strategy 1: Official JioSaavn DES Encrypted Endpoint
   try {
     const url = `https://www.jiosaavn.com/api.php?__call=search.getResults&q=${encodeURIComponent(
-      query
+      cleanQ
     )}&p=1&n=${limit}&_format=json&_marker=0&api_version=4&ctx=web6dot0`;
 
     const res = await fetch(url, {
       headers: {
         'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        Accept: 'application/json',
       },
+      next: { revalidate: 3600 },
     });
 
-    if (!res.ok) return [];
-    const data = await res.json();
-    const results = data.results || [];
+    if (res.ok) {
+      const data = await res.json();
+      const results = data.results || [];
 
-    const tracks: Track[] = [];
-    const seenTitles = new Set<string>();
+      const tracks: Track[] = [];
+      const seenTitles = new Set<string>();
 
-    for (const item of results) {
-      const formatted = formatRawJioSaavnSong(item);
-      if (formatted && formatted.audioUrl) {
-        const key = formatted.title.toLowerCase().trim();
-        if (!seenTitles.has(key)) {
-          seenTitles.add(key);
-          tracks.push(formatted);
+      for (const item of results) {
+        const formatted = formatRawJioSaavnSong(item);
+        if (formatted && formatted.audioUrl) {
+          const key = formatted.title.toLowerCase().trim();
+          if (!seenTitles.has(key)) {
+            seenTitles.add(key);
+            tracks.push(formatted);
+          }
         }
       }
+
+      if (tracks.length > 0) return tracks;
     }
-    return tracks;
   } catch (err) {
-    console.error('searchJioSaavn error:', err);
-    return [];
+    console.warn('[saavnEngine] Primary endpoint attempt failed, falling back:', err);
   }
+
+  // Strategy 2: Fallback to Saavn mirror APIs
+  const mirrorEndpoints = [
+    `https://saavn.dev/api/search/songs?query=${encodeURIComponent(cleanQ)}&limit=${limit}`,
+    `https://jiosaavn-api-privatecvc.vercel.app/search/songs?query=${encodeURIComponent(cleanQ)}&limit=${limit}`,
+  ];
+
+  for (const mirrorUrl of mirrorEndpoints) {
+    try {
+      const res = await fetch(mirrorUrl, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        signal: AbortSignal.timeout(5000),
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        const rawSongs = json?.data?.results || json?.data || json?.results || [];
+
+        const tracks: Track[] = [];
+        const seenTitles = new Set<string>();
+
+        for (const item of rawSongs) {
+          const formatted = formatRawJioSaavnSong(item);
+          if (formatted && formatted.audioUrl) {
+            const key = formatted.title.toLowerCase().trim();
+            if (!seenTitles.has(key)) {
+              seenTitles.add(key);
+              tracks.push(formatted);
+            }
+          }
+        }
+
+        if (tracks.length > 0) return tracks;
+      }
+    } catch {}
+  }
+
+  return [];
 }
 
 export async function getSongDetailsJioSaavn(id: string): Promise<Track | null> {
@@ -185,8 +265,11 @@ export async function getTrendingJioSaavn(category?: string): Promise<Track[]> {
       }
     }
 
-    // Interleave / shuffle slightly to create a fresh feel
-    return uniqueTracks.sort(() => 0.5 - Math.random());
+    if (uniqueTracks.length > 0) {
+      return uniqueTracks.sort(() => 0.5 - Math.random());
+    }
+
+    return await searchJioSaavn('Top Hits', 24);
   } catch (err) {
     console.error('getTrendingJioSaavn error:', err);
     return await searchJioSaavn('Top Hits', 24);

@@ -3,6 +3,9 @@ import { generateStructuredAIJson } from '@/lib/ai/client';
 import { searchJioSaavn } from '@/lib/saavnEngine';
 import type { Track, Playlist } from '@/types';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));

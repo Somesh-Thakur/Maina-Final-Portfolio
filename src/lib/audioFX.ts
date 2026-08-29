@@ -4,6 +4,7 @@
  * - Smart GainNode Crossfading
  * - Loudness Normalization / DynamicsCompressorNode
  * - Karaoke Vocal Reducer (Center-channel phase cancellation)
+ * - Shared AnalyserNode for Visualizers (Eliminates Duplicate MediaElementSource InvalidStateError)
  */
 
 class AudioFXManager {
@@ -11,6 +12,7 @@ class AudioFXManager {
   private sourceNode: MediaElementAudioSourceNode | null = null;
   private masterGain: GainNode | null = null;
   private compressor: DynamicsCompressorNode | null = null;
+  private analyser: AnalyserNode | null = null;
   private karaokeGain: GainNode | null = null;
   private normalGain: GainNode | null = null;
   private splitter: ChannelSplitterNode | null = null;
@@ -40,6 +42,12 @@ class AudioFXManager {
         this.sourceNode = this.ctx.createMediaElementSource(audioElement);
       }
 
+      // Shared FFT Analyser Node for Visualizers
+      this.analyser = this.ctx.createAnalyser();
+      this.analyser.fftSize = 256;
+      this.analyser.smoothingTimeConstant = 0.8;
+      this.sourceNode.connect(this.analyser);
+
       // Master Gain
       this.masterGain = this.ctx.createGain();
       this.masterGain.gain.value = 1.0;
@@ -65,7 +73,7 @@ class AudioFXManager {
       this.inverter = this.ctx.createGain();
       this.inverter.gain.value = -1.0; // Invert phase of right channel
 
-      // Graph: Source -> Normal Gain -> Compressor -> Master Gain -> Destination
+      // Normal Graph: Source -> Normal Gain -> Compressor -> Master Gain -> Destination
       this.sourceNode.connect(this.normalGain);
       this.normalGain.connect(this.compressor);
 
@@ -90,6 +98,20 @@ class AudioFXManager {
         await this.ctx.resume();
       } catch {}
     }
+  }
+
+  getFrequencyData(): Uint8Array {
+    if (!this.analyser) return new Uint8Array(128);
+    const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+    this.analyser.getByteFrequencyData(dataArray);
+    return dataArray;
+  }
+
+  getWaveformData(): Uint8Array {
+    if (!this.analyser) return new Uint8Array(128);
+    const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+    this.analyser.getByteTimeDomainData(dataArray);
+    return dataArray;
   }
 
   setKaraoke(enabled: boolean): void {

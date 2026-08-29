@@ -6,8 +6,7 @@ class DiscordRPCClient {
   private ws: WebSocket | null = null;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private reconnectAttempts = 0;
-  private baseDelay = 1000;
-  private maxDelay = 8000;
+  private maxReconnectAttempts = 1; // Do not spam browser console
   private isManuallyClosed = false;
   private state: ConnectionState = 'disconnected';
 
@@ -17,11 +16,19 @@ class DiscordRPCClient {
       return;
     }
 
+    // Only attempt local websocket bridge if explicitly requested or on localhost
+    const isLocalhost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+    if (!isLocalhost && this.reconnectAttempts >= this.maxReconnectAttempts) {
+      this.state = 'disconnected';
+      return;
+    }
+
     this.isManuallyClosed = false;
-    this.state = this.reconnectAttempts > 0 ? 'reconnecting' : 'disconnected';
 
     try {
-      this.ws = new WebSocket('ws://localhost:3020');
+      this.ws = new WebSocket('ws://127.0.0.1:3020');
 
       this.ws.onopen = () => {
         this.state = 'connected';
@@ -35,9 +42,7 @@ class DiscordRPCClient {
       this.ws.onclose = () => {
         this.state = 'disconnected';
         this.ws = null;
-        if (!this.isManuallyClosed) {
-          this.scheduleReconnect();
-        }
+        // Do not auto-reconnect in loop
       };
 
       this.ws.onerror = () => {
@@ -46,28 +51,13 @@ class DiscordRPCClient {
           try {
             this.ws.close();
           } catch {}
+          this.ws = null;
         }
       };
     } catch {
       this.state = 'disconnected';
-      this.scheduleReconnect();
+      this.ws = null;
     }
-  }
-
-  private scheduleReconnect(): void {
-    if (this.isManuallyClosed || this.reconnectTimer) return;
-
-    // Exponential backoff with jitter up to maxDelay (8s)
-    const exp = Math.min(this.baseDelay * Math.pow(2, this.reconnectAttempts), this.maxDelay);
-    const jitter = Math.random() * 500;
-    const delay = exp + jitter;
-    this.reconnectAttempts++;
-    this.state = 'reconnecting';
-
-    this.reconnectTimer = setTimeout(() => {
-      this.reconnectTimer = null;
-      this.connect();
-    }, delay);
   }
 
   disconnect(): void {
@@ -98,7 +88,7 @@ class DiscordRPCClient {
       } catch {}
     }
 
-    // 2. Send via native WebSocket to local bridge
+    // 2. Send via native WebSocket to local bridge if open
     if (this.ws?.readyState === WebSocket.OPEN) {
       try {
         const { currentTime, duration, isPlaying } = data;
@@ -131,7 +121,7 @@ class DiscordRPCClient {
       } catch {}
     }
 
-    // 2. Send via native WebSocket to local bridge
+    // 2. Send via native WebSocket to local bridge if open
     if (this.ws?.readyState === WebSocket.OPEN) {
       try {
         this.ws.send(JSON.stringify({ type: 'CLEAR' }));

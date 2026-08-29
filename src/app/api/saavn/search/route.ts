@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { searchJioSaavn } from '@/lib/saavnEngine';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = searchParams.get('q');
@@ -10,7 +13,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const tracks = await searchJioSaavn(q, 20);
+    const tracks = await searchJioSaavn(q, 24);
     return NextResponse.json({
       status: 'SUCCESS',
       data: {

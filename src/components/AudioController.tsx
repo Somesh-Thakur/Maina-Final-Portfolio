@@ -91,11 +91,9 @@ export function AudioController() {
         playPromise
           .then(() => {
             if (!analyserInitialized.current && audioRef.current) {
-              audioAnalyser.initAnalyser(audioRef.current);
               audioFX.init(audioRef.current);
               analyserInitialized.current = true;
             }
-            audioAnalyser.resumeContext();
             audioFX.resume();
           })
           .catch((err) => {

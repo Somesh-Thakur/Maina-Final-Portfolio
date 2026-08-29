@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { generateStructuredAIJson } from '@/lib/ai/client';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import type { SongLore } from '@/types';
 
 export async function GET(req: Request) {
